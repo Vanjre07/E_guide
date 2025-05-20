@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Entrepreneurship Guide{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+    <h1 class="display-4 mb-4">
+        {% if session.get('language') == 'kn' %}
+        ಉದ್ಯಮಶೀಲತೆ ಮಾರ್ಗದರ್ಶಿ
+        {% else %}
+        Entrepreneurship Guide
+        {% endif %}
+    </h1>
+    
+    <p class="lead mb-4">
+        {% if session.get('language') == 'kn' %}
+        ನಿಮ್ಮ ಉದ್ಯಮಶೀಲತೆ ಪ್ರಯಾಣವನ್ನು ಪ್ರಾರಂಭಿಸಲು ಸಹಾಯ ಮಾಡಲು ಇಲ್ಲಿ
+        {% else %}
+        Your one-stop resource for entrepreneurship knowledge and guidance
+        {% endif %}
+    </p>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="mb-4">
+                        {% if session.get('language') == 'kn' %}
+                        ನಮ್ಮ ಸೇವೆಗಳು
+                        {% else %}
+                        Our Services
+                        {% endif %}
+                    </h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        {% if session.get('language') == 'kn' %}
+                                        ಉದ್ಯಮಶೀಲತೆ ಸಂಪನ್ಮೂಲಗಳು
+                                        {% else %}
+                                        Entrepreneurship Resources
+                                        {% endif %}
+                                    </h5>
+                                    <p class="card-text">
+                                        {% if session.get('language') == 'kn' %}
+                                        ವಿಶೇಷ ಸಂಪನ್ಮೂಲಗಳು ಮತ್ತು ಮಾರ್ಗದರ್ಶನ
+                                        {% else %}
+                                        Access exclusive resources and guidance
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        {% if session.get('language') == 'kn' %}
+                                        ಪ್ರಶ್ನೆ-ಉತ್ತರ
+                                        {% else %}
+                                        Q&A Support
+                                        {% endif %}
+                                    </h5>
+                                    <p class="card-text">
+                                        {% if session.get('language') == 'kn' %}
+                                        ನಿಮ್ಮ ಪ್ರಶ್ನೆಗಳಿಗೆ ತಜ್ಞರಿಂದ ಉತ್ತರಗಳು
+                                        {% else %}
+                                        Get answers to your questions from experts
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">
+                            {% if session.get('language') == 'kn' %}
+                            ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಹೋಗಿ
+                            {% else %}
+                            Go to Dashboard
+                            {% endif %}
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-3">
+                            {% if session.get('language') == 'kn' %}
+                            ಈಗ ಪ್ರಾರಂಭಿಸಿ
+                            {% else %}
+                            Get Started
+                            {% endif %}
+                        </a>
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">
+                            {% if session.get('language') == 'kn' %}
+                            ಲಾಗಿನ್ ಮಾಡಿ
+                            {% else %}
+                            Login
+                            {% endif %}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

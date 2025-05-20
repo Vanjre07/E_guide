@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if session.get('language') == 'kn' %}
+    ಡ್ಯಾಶ್‌ಬೋರ್ಡ್
+    {% else %}
+    Dashboard
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Welcome Section -->
+        <div class="col-md-12 mb-4">
+            <div class="welcome-section p-4 bg-light rounded shadow-sm">
+                <h2 class="mb-3">
+                    {% if session.get('language') == 'kn' %}
+                    ಸ್ವಾಗತ, {{ current_user.email }}!
+                    {% else %}
+                    Welcome, {{ current_user.email }}!
+                    {% endif %}
+                </h2>
+                <p class="lead">
+                    {% if session.get('language') == 'kn' %}
+                    ನಿಮ್ಮ ಉದ್ಯಮ ಪ್ರಯಾಣದಲ್ಲಿ ನಿಮಗೆ ಸಹಾಯ ಮಾಡಲು ನಾವು ಇಲ್ಲಿದ್ದೇವೆ. ನಿಮ್ಮ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಿ, ಸಂಪನ್ಮೂಲಗಳನ್ನು ಅನ್ವೇಷಿಸಿ ಮತ್ತು ಇತರ ಉದ್ಯಮಿಗಳೊಂದಿಗೆ ಸಂಪರ್ಕಿಸಿ.
+                    {% else %}
+                    We're here to help you on your entrepreneurial journey. Ask your questions, explore resources, and connect with other entrepreneurs.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="col-md-12 mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card stat-card text-white bg-primary mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {% if session.get('language') == 'kn' %}
+                                ನಿಮ್ಮ ಪ್ರಶ್ನೆಗಳು
+                                {% else %}
+                                Your Questions
+                                {% endif %}
+                            </h5>
+                            <p class="card-text display-6">{{ questions|length }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card stat-card text-white bg-success mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {% if session.get('language') == 'kn' %}
+                                ಉತ್ತರಿಸಿದ ಪ್ರಶ್ನೆಗಳು
+                                {% else %}
+                                Answered Questions
+                                {% endif %}
+                            </h5>
+                            <p class="card-text display-6">{{ questions|selectattr('answered', 'equalto', true)|list|length }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card stat-card text-white bg-info mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {% if session.get('language') == 'kn' %}
+                                ಲಭ್ಯ ಸಂಪನ್ಮೂಲಗಳು
+                                {% else %}
+                                Available Resources
+                                {% endif %}
+                            </h5>
+                            <p class="card-text display-6">{{ resources|length }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ask Question Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        {% if session.get('language') == 'kn' %}
+                        ಪ್ರಶ್ನೆ ಕೇಳಿ
+                        {% else %}
+                        Ask a Question
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('post_question') }}">
+                        <div class="mb-3">
+                            <textarea class="form-control" name="question" rows="4" required
+                                placeholder="{% if session.get('language') == 'kn' %}ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಇಲ್ಲಿ ಬರೆಯಿರಿ...{% else %}Type your question here...{% endif %}"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            {% if session.get('language') == 'kn' %}
+                            ಪ್ರಶ್ನೆ ಕಳುಹಿಸಿ
+                            {% else %}
+                            Submit Question
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Your Questions Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0">
+                        {% if session.get('language') == 'kn' %}
+                        ನಿಮ್ಮ ಪ್ರಶ್ನೆಗಳು
+                        {% else %}
+                        Your Questions
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% if questions %}
+                        {% for question in questions %}
+                        <div class="question-card mb-3 p-3 border rounded">
+                            <h5 class="mb-2">Q: {{ question.question }}</h5>
+                            <p class="text-muted small mb-2">
+                                {{ question.created_at.strftime('%Y-%m-%d %H:%M') }}
+                            </p>
+                            {% if question.answered %}
+                            <div class="answer-section mt-2">
+                                <h6 class="text-success">
+                                    {% if session.get('language') == 'kn' %}
+                                    ಉತ್ತರ:
+                                    {% else %}
+                                    Answer:
+                                    {% endif %}
+                                </h6>
+                                <p class="text-success">{{ question.answer }}</p>
+                            </div>
+                            {% else %}
+                            <p class="text-muted">
+                                {% if session.get('language') == 'kn' %}
+                                ಉತ್ತರಕ್ಕಾಗಿ ಕಾಯುತ್ತಿದೆ...
+                                {% else %}
+                                Waiting for answer...
+                                {% endif %}
+                            </p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">
+                            {% if session.get('language') == 'kn' %}
+                            ನೀವು ಇನ್ನೂ ಯಾವುದೇ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಿಲ್ಲ.
+                            {% else %}
+                            You haven't asked any questions yet.
+                            {% endif %}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Resources Section -->
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">
+                        {% if session.get('language') == 'kn' %}
+                        ಲಭ್ಯ ಸಂಪನ್ಮೂಲಗಳು
+                        {% else %}
+                        Available Resources
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for resource in resources %}
+                        <div class="col-md-4 mb-3">
+                            <div class="resource-card p-3 border rounded h-100">
+                                <h5 class="mb-2">{{ resource.title }}</h5>
+                                <p class="text-muted">{{ resource.description }}</p>
+                                <a href="{{ resource.link }}" class="btn btn-outline-primary btn-sm" target="_blank">
+                                    {% if session.get('language') == 'kn' %}
+                                    ವೀಕ್ಷಿಸಿ
+                                    {% else %}
+                                    View
+                                    {% endif %}
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.welcome-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 5px solid #007bff;
+}
+
+.stat-card {
+    transition: transform 0.2s;
+    border: none;
+    border-radius: 10px;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.question-card {
+    transition: background-color 0.2s;
+}
+
+.question-card:hover {
+    background-color: #f8f9fa;
+}
+
+.resource-card {
+    transition: all 0.2s;
+}
+
+.resource-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.card-header {
+    border-bottom: none;
+}
+
+.answer-section {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+textarea.form-control {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+}
+
+textarea.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+    border-color: #80bdff;
+}
+
+.btn {
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3 0%, #004494 100%);
+    transform: translateY(-1px);
+}
+</style>
+{% endblock %} 

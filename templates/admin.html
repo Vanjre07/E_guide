@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel - Entrepreneurship Guide{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>
+                    {% if session.get('language') == 'kn' %}
+                    ಬಳಕೆದಾರರು
+                    {% else %}
+                    Users
+                    {% endif %}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>
+                                    {% if session.get('language') == 'kn' %}
+                                    ನೋಂದಾಯಿಸಲಾದ ದಿನಾಂಕ
+                                    {% else %}
+                                    Registered Date
+                                    {% endif %}
+                                </th>
+                                <th>
+                                    {% if session.get('language') == 'kn' %}
+                                    ಸ್ಥಿತಿ
+                                    {% else %}
+                                    Status
+                                    {% endif %}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    {% if user.is_admin %}
+                                    <span class="badge bg-primary">Admin</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">User</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>
+                    {% if session.get('language') == 'kn' %}
+                    ಪ್ರಶ್ನೆಗಳು
+                    {% else %}
+                    Questions
+                    {% endif %}
+                </h3>
+            </div>
+            <div class="card-body">
+                {% for question in questions %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <p><strong>Q: {{ question.question }}</strong></p>
+                        <p class="text-muted">
+                            {% if session.get('language') == 'kn' %}
+                            ಬಳಕೆದಾರ:
+                            {% else %}
+                            User:
+                            {% endif %}
+                            {{ question.user_email }}
+                        </p>
+                        {% if question.answered %}
+                        <p class="text-success">A: {{ question.answer }}</p>
+                        {% else %}
+                        <form method="POST" action="{{ url_for('answer_question') }}">
+                            <input type="hidden" name="question_id" value="{{ question._id }}">
+                            <div class="mb-3">
+                                <textarea class="form-control" name="answer" rows="3" required
+                                    placeholder="{% if session.get('language') == 'kn' %}ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಇಲ್ಲಿ ಬರೆಯಿರಿ...{% else %}Type your answer here...{% endif %}"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                {% if session.get('language') == 'kn' %}
+                                ಉತ್ತರ ಕಳುಹಿಸಿ
+                                {% else %}
+                                Submit Answer
+                                {% endif %}
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
